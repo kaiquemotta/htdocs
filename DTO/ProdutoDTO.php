@@ -21,7 +21,7 @@ require_once('Connection.php');
       <tr>
         <td align = 'center'>".$produto['ID_Produto']."</td>
         <td align = 'center'>".$produto['Descricao']."</td>
-         <td align = 'center'>R$:".number_format($produto['Preco'],2,",",".")."</td>
+         <td align = 'center'>R$ ".number_format($produto['Preco'],2,",",".")."</td>
         <td>
           <button class='btn btn-warning' title='Editar' value='".$produto['ID_Produto']."' onclick='editar(this)'>
             <i class='fas fa-edit'></i>

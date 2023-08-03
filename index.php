@@ -37,8 +37,8 @@
                 <div class="row">
           <div class="col-12">
            <div class="jumbotron">
-            <h1 class="display-4">Festa de Agosto 2019</h1>
-              <p class="lead">Sistema de Vendas PDV Online.</p>
+            <h1 class="display-4">Olá Burguer</h1>
+              <p class="lead">Sistema de Vendas PDV.</p>
             </div>
           </div>
           <!-- ./col -->

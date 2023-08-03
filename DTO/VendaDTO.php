@@ -115,9 +115,9 @@ inner join produto p on iv.FK_Produto = P.ID_Produto where iv.FK_Venda =".$idven
     $retorno = $retorno."
       <tr>
         <td align = 'center'>".$produto['Descricao']."</td>
-        <td align = 'center'>R$:".number_format($produto['Preco'],2,",",".")."</td>
+        <td align = 'left'>R$ ".number_format($produto['Preco'],2,",",".")."</td>
         <td>".$produto['Quantidade'].  "<i class='fa fa-plus' style='padding-left:10%' aria-hidden='true' onclick='add(".$produto['cod'].")'></i></td>
-         <td align = 'center'>R$:".number_format($produto['SubTotal'],2,",",".")."</td>
+         <td align = 'left'>R$ ".number_format($produto['SubTotal'],2,",",".")."</td>
         <td>
             <button class='btn btn-danger' type='Button' title='Excluir' value='".$produto['ID_Produto']."' onclick='excluir(this)'>
             <i class='fas fa-trash'></i>
@@ -152,7 +152,7 @@ inner join produto p on iv.FK_Produto = P.ID_Produto where iv.FK_Venda =".$idven
     $retorno = $retorno."
 
          <td colspan='4'><b>Total a Pagar:</b> 
-         <td colspan='1'><b>R$:".number_format($produto['Total'],2,",",".")."</b>
+         <td colspan='1'><b>R$ ".number_format($produto['Total'],2,",",".")."</b>
      ";
   }
 
@@ -350,13 +350,13 @@ $modes = array(
 
       $printer->text($descricao);
        $printer->text("     ".$rs['Quantidade']);
-        $printer->text("             "."R$:".$rs['SubTotal']."\n");
+        $printer->text("             "."R$ ".$rs['SubTotal']."\n");
       $printer -> feed(1);
     }
       $printer->text("______________________________________________\n");
       $printer->text("\n\n");
       $printer -> selectPrintMode(8);
-      $printer->text("Total de Itens:".$totalItens."       Valor Total R$  ".$total."\n");
+      $printer->text("Total de Itens:".$totalItens."       Valor Total R$ ".$total."\n");
       $printer->text("\n");
       $printer->text("______________________________________________\n");
       $printer -> selectPrintMode(8);
@@ -459,7 +459,11 @@ function FechamentoCaixa($data){
  $conexao = new Conexao();
 
   $sql =  "select sum(p.Preco * iv.Quantidade) as Total, 
-CASE WHEN pv.Pagamento = 1 THEN 'Dinheiro' ELSE 'Outros' END as Pagamento
+CASE 
+WHEN pv.Pagamento = 1 THEN 'Dinheiro'
+WHEN pv.Pagamento = 2 THEN 'Cartão'
+WHEN pv.Pagamento = 3 THEN 'Pix'
+ELSE 'Outros' END as Pagamento
 from venda v inner join 
 item_venda iv on v.ID_Venda = iv.FK_Venda inner join 
 produto p on p.ID_Produto = iv.Fk_Produto inner join 
@@ -482,12 +486,12 @@ $data = date('d/m/Y');
    $total = 0;
    while($rs = mysqli_fetch_assoc($exec)){
     
-  $html= $html. "<p class='center sub-titulo'>".$rs["Pagamento"]." - <strong>R$:".number_format($rs['Total'],2,',','.')."</strong> </p>";
+  $html= $html. "<p class='center sub-titulo'>".$rs["Pagamento"]." - <strong>R$ ".number_format($rs['Total'],2,',','.')."</strong> </p>";
 
   $total = $total + $rs['Total'];
  }
 
-  $html= $html. "<p class='center sub-titulo'> Total - <strong>R$:".number_format($total,2,',','.')."</strong> </p>";
+  $html= $html. "<p class='center sub-titulo'> Total - <strong>R$ ".number_format($total,2,',','.')."</strong> </p>";
 
 
 echo($html);
@@ -532,7 +536,7 @@ where v.DataVenda >= '".$datainicio."' AND v.DataVenda <='".$datafim."' group by
         <td align = 'center'>".date("d/m/Y",strtotime($produto['DataVenda']))."</td>
         <td align = 'center'>".$produto['CodigoVenda']."</td>
         <td align = 'center'>".$produto['Quantidade']."</td>
-         <td align = 'center'>R$:".number_format($produto['Total'],2,",",".")."</td> 
+         <td align = 'center'>R$ ".number_format($produto['Total'],2,",",".")."</td> 
       </tr>";
   }
 
@@ -580,7 +584,7 @@ where v.DataVenda >= '".$datainicio."' AND v.DataVenda <='".$datafim."'";
         <td align = 'center'></td>
          <td align = 'center'></td>
          <td align = 'center'><b>".$produto['Quantidade']."</b></td> 
-         <td align = 'center'><b>R$:".number_format($produto['Total'],2,",",".")."</b></td> 
+         <td align = 'center'><b>R$ ".number_format($produto['Total'],2,",",".")."</b></td> 
       </tr>
      ";
   }
@@ -630,7 +634,7 @@ where v.DataVenda >= '".$datainicio."' AND v.DataVenda <='".$datafim."' group by
       <tr>
         <td align = 'center'>".$produto['Produto']."</td>
         <td align = 'center'>".$produto['Quantidade']."</td>
-         <td align = 'center'>R$:".number_format($produto['Total'],2,",",".")."</td> 
+         <td align = 'center'>R$ ".number_format($produto['Total'],2,",",".")."</td> 
       </tr>";
   }
 
@@ -678,7 +682,7 @@ where v.DataVenda >= '".$datainicio."' AND v.DataVenda <='".$datafim."'";
         <tr>
         <td align = 'center'></td>
          <td align = 'center'><b>".$produto['Quantidade']."</b></td> 
-         <td align = 'center'><b>R$:".number_format($produto['Total'],2,",",".")."</b></td> 
+         <td align = 'center'><b>R$ ".number_format($produto['Total'],2,",",".")."</b></td> 
       </tr>
      ";
   }

@@ -122,7 +122,9 @@
                                 <div class="controls">
                                     <select name="pgto" id="pgto" class="form-control">
                                       <option value="1"> Dinheiro </option>
-                                       <option value="2"> Outros </option>
+                                      <option value="2"> Cartão </option>
+                                      <option value="3"> Pix </option>
+                                       <option value="4"> Outros </option>
                                     </select>
                                 </div>
                             </div>
@@ -273,7 +275,7 @@
       decimal = ""+decimal+"";
       decimal = decimal.substr(0,2);
       
-      valor = "R$:"+inteiro+","+decimal;
+      valor = "R$ "+inteiro+","+decimal;
       
       
       return valor;
@@ -288,9 +290,9 @@ showSymbol:true, thousands:'.', decimal:',', symbolStay: true});
 
       function cancelarVenda(){
 
-         var confirm1 = false;
+         var confirm1 = true;
   
-   confirm1 = confirm("Deseja Realmente Cancelar a Venda?");
+ //  confirm1 = confirm("Deseja Realmente Cancelar a Venda?");
 
       if (confirm1 == true){
 
@@ -350,7 +352,7 @@ function listarPagamento(){
     data: {idvenda:idvenda},
     success: function (result) {
       var aux = JSON.parse(result);
-    $('#totalpagar').val("R$:"+aux.Total);
+    $('#totalpagar').val("R$ "+aux.Total);
      $('#totalitens').val(aux.TotalItem);
     },
     error: function() {
@@ -361,9 +363,9 @@ function listarPagamento(){
 
 function excluir(id) {
 
-   var confirm1 = false;
+   var confirm1 = true;
   
-   confirm1 = confirm("Deseja Realmente Excluir o Produto?");
+   //confirm1 = confirm("Deseja Realmente Excluir o Produto?");
   
    var data = {idproduto:$(id).val(),idvenda:$('#idvenda').val()};
     if(confirm1 == true){
@@ -467,6 +469,11 @@ function listarTotal(){
     
       });
 
+      $("#pgto").change(function() {
+        attPgto();
+    
+      });
+
    function attPgto(){
     var totalpgto = null;
     var idvenda = $("#idvenda").val();
@@ -482,11 +489,23 @@ function listarTotal(){
       if(valor < totalpgto){
         alert("Valor menor que o Total a Pagar");
         $('#modalPagamento').modal('hide');
-
+        return;
+      }
+      
+      if(valor > totalpgto & $("#pgto").val()!=1 ){
+        alert("Valor pago não pode ser maior que o valor total do Pedido!");
+        $('#modalPagamento').modal('hide');
         return;
       }
 
-      $('#troco').val(converteFloatMoeda((valor - totalpgto)));
+      if($("#pgto").val()==1){
+        $('#troco').val(converteFloatMoeda((valor - totalpgto)));
+      }
+
+      if($("#pgto").val()!=1){
+        $('#troco').val(converteFloatMoeda((valor - totalpgto)));
+      }
+
       $('#totalpago').val(converteFloatMoeda(valor)); 
     },
     error: function() {
@@ -499,15 +518,21 @@ function listarTotal(){
 function finalizar(){
 
 
+  var totalpgto = $("#totalpagar").val();
+  var troco = $('#troco').val();
+
+  console.log("totalpago:"+totalpgto+"total:"+troco);  
+
+
 if($("#totalpago").val() != "" & $("#troco").val() !=""){
 
- var confirm1 = false;
+ var confirm1 = true;
   
-   confirm1 = confirm("Deseja Realmente Finalizar a Venda?");
+
 
    if(confirm1 == true){
     var totalpgto = $("#totalpagar").val();
-    totalpgto = totalpgto.replace("R$:","");
+    totalpgto = totalpgto.replace("R$ ","");
     totalpgto = realParaNumber(totalpgto);
     var idvenda = $("#idvenda").val();
     var tipopgto = $("#pgto").val();
@@ -523,7 +548,7 @@ if($("#totalpago").val() != "" & $("#troco").val() !=""){
     url: "/DTO/call/venda/imprime.php",
      data: {idvenda:idvenda},
     success: function (result) {
-      alert("Venda Emitida com Sucesso");
+      //alert("Venda Emitida com Sucesso");
       document.location.reload(true);
       
     },
@@ -568,5 +593,5 @@ function add(id){
 
 }
  </script> 
-}
+
 </html> 
